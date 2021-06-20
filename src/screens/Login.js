@@ -1,36 +1,20 @@
-import { useState } from "react";
-import styled, { css } from "styled-components";
-import { isLoggedInVar } from "../apollo";
+import styled from "styled-components";
+import { darkModeVar } from "../apollo";
 
 const Title = styled.h1`
-  color: ${(props) => (props.test ? "blue" : "beige")};
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  ${(props) =>
-    props.test
-      ? css`
-          font-size: 50px;
-        `
-      : css`
-          font-size: 20px;
-        `}
+  color: ${(props) => props.theme.fontColor};
 `;
 
 const Container = styled.div`
-  background-color: tomato;
-`;
-
-const ToggleButton = styled.button`
-  color: red;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 function Login() {
-  const [test, setTest] = useState(false);
-  const toggleSetTest = () => setTest((current) => !current);
   return (
     <Container>
-      <Title test={test}>Войти в аккаунт</Title>
-      <ToggleButton onClick={toggleSetTest}>Переключить!</ToggleButton>
+      <Title>Войти в аккаунт</Title>
+      <button onClick={() => darkModeVar(true)}>Темная тема</button>
+      <button onClick={() => darkModeVar(false)}>Светлая тема</button>
     </Container>
   );
 }

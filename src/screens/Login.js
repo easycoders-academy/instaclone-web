@@ -11,7 +11,7 @@ import Separator from "../components/auth/Separator";
 import Input from "../components/auth/Input";
 import FormBox from "../components/auth/FormBox";
 import BottomBox from "../components/auth/BottomBox";
-import { useState } from "react";
+import PageTitle from "../components/PageTitle";
 
 const FacebookLogin = styled.div`
   color: #385185;
@@ -22,44 +22,17 @@ const FacebookLogin = styled.div`
 `;
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const onUsernameChange = (event) => {
-    setUsernameError("");
-    setUsername(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (username === "") {
-      setUsernameError("Введите имя пользователя");
-    } else if (username.length < 10) {
-      setUsernameError("Слишком короткое имя пользователя");
-    } else {
-      console.log(username);
-    }
-  };
-
   return (
     <AuthLayout>
+      <PageTitle title="Вход в аккаунт" />
       <FormBox>
         <div>
           <FontAwesomeIcon icon={faInstagram} size="3x" />
         </div>
-        {usernameError}
-        <form onSubmit={handleSubmit}>
-          <Input
-            onChange={onUsernameChange}
-            value={username}
-            type="text"
-            placeholder="Имя пользователя"
-          />
+        <form>
+          <Input type="text" placeholder="Имя пользователя" />
           <Input type="password" placeholder="Пароль" />
-          <Button
-            type="submit"
-            value="Войти"
-            disabled={(username === "") & (username.length < 10)}
-          />
+          <Button type="submit" value="Войти" />
         </form>
         <Separator />
         <FacebookLogin>

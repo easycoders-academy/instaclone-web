@@ -8,6 +8,7 @@ import Input from "../components/auth/Input";
 import FormBox from "../components/auth/FormBox";
 import BottomBox from "../components/auth/BottomBox";
 import { BoldLink } from "../components/shared";
+import PageTitle from "../components/PageTitle";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -25,6 +26,7 @@ const Subtitle = styled(BoldLink)`
 function SignUp() {
   return (
     <AuthLayout>
+      <PageTitle title="Регистрация" />
       <FormBox>
         <HeaderContainer>
           <FontAwesomeIcon icon={faInstagram} size="3x" />

@@ -5,3 +5,8 @@ export const BaseBox = styled.div`
   border: 1px solid ${(props) => props.theme.borderColor};
   width: 100%;
 `;
+
+export const BoldLink = styled.span`
+  color: rgb(142, 142, 142);
+  font-weight: 600;
+`;

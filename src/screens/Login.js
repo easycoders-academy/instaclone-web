@@ -12,6 +12,7 @@ import Input from "../components/auth/Input";
 import FormBox from "../components/auth/FormBox";
 import BottomBox from "../components/auth/BottomBox";
 import PageTitle from "../components/PageTitle";
+import { useForm } from "react-hook-form";
 
 const FacebookLogin = styled.div`
   color: #385185;
@@ -22,6 +23,9 @@ const FacebookLogin = styled.div`
 `;
 
 function Login() {
+  const { register, handleSubmit } = useForm();
+  const onSubmitValid = (data) => console.log(data);
+  const onSubmitInvalid = (data) => console.log(data, "invalid");
   return (
     <AuthLayout>
       <PageTitle title="Вход в аккаунт" />
@@ -29,9 +33,22 @@ function Login() {
         <div>
           <FontAwesomeIcon icon={faInstagram} size="3x" />
         </div>
-        <form>
-          <Input type="text" placeholder="Имя пользователя" />
-          <Input type="password" placeholder="Пароль" />
+        <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
+          <Input
+            {...register("username", {
+              required: "Имя пользователя обязательно для заполнения",
+              minLength: 10,
+            })}
+            type="text"
+            placeholder="Имя пользователя"
+          />
+          <Input
+            {...register("password", {
+              required: "Пароль обязателен для заполнения",
+            })}
+            type="password"
+            placeholder="Пароль"
+          />
           <Button type="submit" value="Войти" />
         </form>
         <Separator />

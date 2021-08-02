@@ -13,6 +13,7 @@ import FormBox from "../components/auth/FormBox";
 import BottomBox from "../components/auth/BottomBox";
 import PageTitle from "../components/PageTitle";
 import { useForm } from "react-hook-form";
+import FormError from "../components/auth/FormError";
 
 const FacebookLogin = styled.div`
   color: #385185;
@@ -23,9 +24,11 @@ const FacebookLogin = styled.div`
 `;
 
 function Login() {
-  const { register, handleSubmit } = useForm();
-  const onSubmitValid = (data) => console.log(data);
-  const onSubmitInvalid = (data) => console.log(data, "invalid");
+  const { register, handleSubmit, formState, setError } = useForm({ mode: "onChange" });
+  const onSubmitValid = (data) => {
+    //console.log(data);
+  };
+
   return (
     <AuthLayout>
       <PageTitle title="Вход в аккаунт" />
@@ -33,23 +36,30 @@ function Login() {
         <div>
           <FontAwesomeIcon icon={faInstagram} size="3x" />
         </div>
-        <form onSubmit={handleSubmit(onSubmitValid, onSubmitInvalid)}>
+        <form onSubmit={handleSubmit(onSubmitValid)}>
           <Input
             {...register("username", {
               required: "Имя пользователя обязательно для заполнения",
-              minLength: 10,
+              minLength: {
+                value: 5,
+                message: "Имя пользователя должно быть длиннее 5 символов",
+              },
             })}
             type="text"
             placeholder="Имя пользователя"
+            hasError={Boolean(formState.errors?.username?.message)}
           />
+          <FormError message={formState.errors?.username?.message} />
           <Input
             {...register("password", {
               required: "Пароль обязателен для заполнения",
             })}
             type="password"
             placeholder="Пароль"
+            hasError={Boolean(formState.errors?.password?.message)}
           />
-          <Button type="submit" value="Войти" />
+          <FormError message={formState.errors?.password?.message} />
+          <Button type="submit" value="Войти" disabled={!formState.isValid} />
         </form>
         <Separator />
         <FacebookLogin>

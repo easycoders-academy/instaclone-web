@@ -1,30 +1,20 @@
-import { useReactiveVar } from "@apollo/client";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { ThemeProvider, withTheme } from "styled-components";
-import { darkModeVar, isLoggedInVar } from "./apollo";
-import Home from "./screens/Home";
-import Login from "./screens/Login";
-import NotFound from "./screens/NotFound";
-import { darkTheme, GlobalStyles, lightTheme } from "./styles";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+interface IForm {
+  firstName: string;
+  lastName?: string;
+}
 
 function App() {
-  const isLoggedIn = useReactiveVar(isLoggedInVar);
-  const darkMode = useReactiveVar(darkModeVar);
-
+  const { register, getValues, handleSubmit } = useForm<IForm>();
+  const onValid = () => {
+    const { firstName, lastName } = getValues();
+  };
   return (
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <GlobalStyles />
-      <Router>
-        <Switch>
-          <Route path="/" exact>
-            {isLoggedIn ? <Home /> : <Login />}
-          </Route>
-          <Route>
-            <NotFound />
-          </Route>
-        </Switch>
-      </Router>
-    </ThemeProvider>
+    <form onSubmit={handleSubmit(onValid)}>
+      <input {...register("firstName", { required: true })} type="text" />
+      <input {...register("lastName")} type="text" />
+    </form>
   );
 }
 

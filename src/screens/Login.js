@@ -56,7 +56,7 @@ function Login() {
     setError,
     clearErrors,
   } = useForm({
-    mode: "onChange",
+    mode: "onBlur",
   });
   const onSubmitValid = (data) => {
     if (loading) return;

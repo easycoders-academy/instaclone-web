@@ -15,6 +15,7 @@ import PageTitle from "../components/PageTitle";
 import { useForm } from "react-hook-form";
 import FormError from "../components/auth/FormError";
 import { gql, useMutation } from "@apollo/client";
+import { LoginUser } from "../apollo";
 
 const FacebookLogin = styled.div`
   color: #385185;
@@ -39,12 +40,22 @@ function Login() {
       login: { ok, error, token },
     } = data;
     if (!ok) {
-      setError("result", { message: error });
+      return setError("result", { message: error });
+    }
+    if (token) {
+      LoginUser(token);
     }
   };
 
   const [login, { loading }] = useMutation(LOGIN_MUTATTION, { onCompleted });
-  const { register, handleSubmit, formState, getValues, setError } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState,
+    getValues,
+    setError,
+    clearErrors,
+  } = useForm({
     mode: "onChange",
   });
   const onSubmitValid = (data) => {
@@ -56,6 +67,10 @@ function Login() {
         password,
       },
     });
+  };
+
+  const clearLoginErrors = () => {
+    clearErrors("result");
   };
 
   return (
@@ -76,6 +91,7 @@ function Login() {
             })}
             type="text"
             placeholder="Имя пользователя"
+            onChange={clearLoginErrors}
             hasError={Boolean(formState.errors?.username?.message)}
           />
           <FormError message={formState.errors?.username?.message} />
@@ -85,6 +101,7 @@ function Login() {
             })}
             type="password"
             placeholder="Пароль"
+            onChange={clearLoginErrors}
             hasError={Boolean(formState.errors?.password?.message)}
           />
           <FormError message={formState.errors?.password?.message} />

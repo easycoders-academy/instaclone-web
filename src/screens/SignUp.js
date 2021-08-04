@@ -56,10 +56,15 @@ function SignUp() {
       createAccount: { ok, error },
     } = data;
     if (!ok) return setError("result", { message: error });
-    history.push(routes.home);
+    const { username, password } = getValues();
+    history.push(routes.home, {
+      message: "Пользователь зарегистрирован. Пожалуйста, войдите в аккаунт",
+      username,
+      password,
+    });
   };
 
-  const { register, handleSubmit, formState, setError } = useForm({
+  const { register, handleSubmit, formState, setError, getValues } = useForm({
     mode: "onBlur",
   });
   const [signUp, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {

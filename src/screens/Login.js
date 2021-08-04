@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import FormError from "../components/auth/FormError";
 import { gql, useMutation } from "@apollo/client";
 import { LoginUser } from "../apollo";
+import { useLocation } from "react-router-dom";
 
 const FacebookLogin = styled.div`
   color: #385185;
@@ -24,6 +25,11 @@ const FacebookLogin = styled.div`
     font-weight: 600;
   }
 `;
+
+const Notification = styled.div`
+  color: #27ae60;
+`;
+
 const LOGIN_MUTATTION = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
@@ -35,6 +41,7 @@ const LOGIN_MUTATTION = gql`
 `;
 
 function Login() {
+  const location = useLocation();
   const onCompleted = (data) => {
     const {
       login: { ok, error, token },
@@ -57,6 +64,10 @@ function Login() {
     clearErrors,
   } = useForm({
     mode: "onBlur",
+    defaultValues: {
+      username: location?.state?.username || "",
+      password: location?.state?.password || "",
+    },
   });
   const onSubmitValid = (data) => {
     if (loading) return;
@@ -80,6 +91,7 @@ function Login() {
         <div>
           <FontAwesomeIcon icon={faInstagram} size="3x" />
         </div>
+        <Notification>{location?.state?.message}</Notification>
         <form onSubmit={handleSubmit(onSubmitValid)}>
           <Input
             {...register("username", {

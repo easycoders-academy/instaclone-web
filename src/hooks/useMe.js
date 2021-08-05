@@ -19,7 +19,7 @@ function useMe() {
   useEffect(() => {
     if (data?.me === null) LogoutUser();
   }, [data]);
-  return;
+  return { data };
 }
 
 export default useMe;

@@ -1,14 +1,14 @@
 import { gql, useQuery } from "@apollo/client";
 import styled from "styled-components";
 import Avatar from "../components/Avatar";
-import { LogoutUser } from "../apollo";
 import { BoldText } from "../components/shared";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBookmark,
   faComment,
   faHeart,
-} from "@fortawesome/free-solid-svg-icons";
+} from "@fortawesome/free-regular-svg-icons";
+import { faHeart as SolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { faTelegramPlane } from "@fortawesome/free-brands-svg-icons";
 
 const SEE_FEED_QUERY = gql`
@@ -25,6 +25,7 @@ const SEE_FEED_QUERY = gql`
       }
       createdAt
       isMine
+      isLiked
     }
   }
 `;
@@ -32,7 +33,8 @@ const SEE_FEED_QUERY = gql`
 const PostContainer = styled.div`
   background-color: white;
   border: 1px solid ${(props) => props.theme.borderColor};
-  margin-bottom: 20px;
+  border-radius: 4px;
+  margin-bottom: 60px;
   max-width: 620px;
 `;
 
@@ -40,6 +42,7 @@ const PostHeader = styled.div`
   display: flex;
   align-items: center;
   padding: 15px;
+  border-bottom: 1px solid rgb(239, 239, 239);
 `;
 
 const Username = styled(BoldText)`
@@ -52,7 +55,7 @@ const PostContent = styled.img`
 `;
 
 const PostFooter = styled.div`
-  padding: 15px;
+  padding: 12px 15px;
 `;
 
 const PostActions = styled.div`
@@ -62,6 +65,9 @@ const PostActions = styled.div`
   div {
     display: flex;
     align-items: center;
+  }
+  svg {
+    font-size: 20px;
   }
 `;
 
@@ -89,17 +95,20 @@ function Home() {
             <PostActions>
               <div>
                 <PostAction>
-                  <FontAwesomeIcon size={"lg"} icon={faHeart} />
+                  <FontAwesomeIcon
+                    style={{ color: post?.isLiked ? "tomato" : "inherit" }}
+                    icon={post?.isLiked ? SolidHeart : faHeart}
+                  />
                 </PostAction>
                 <PostAction>
-                  <FontAwesomeIcon size={"lg"} icon={faComment} />
+                  <FontAwesomeIcon icon={faComment} />
                 </PostAction>
                 <PostAction>
-                  <FontAwesomeIcon size={"lg"} icon={faTelegramPlane} />
+                  <FontAwesomeIcon icon={faTelegramPlane} />
                 </PostAction>
               </div>
               <div>
-                <FontAwesomeIcon size={"lg"} icon={faBookmark} />
+                <FontAwesomeIcon icon={faBookmark} />
               </div>
             </PostActions>
             <Likes>

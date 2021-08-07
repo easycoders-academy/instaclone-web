@@ -1,5 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import Post from "../components/feed/Post";
+import PageTitle from "../components/PageTitle";
 
 const SEE_FEED_QUERY = gql`
   query seeFeed {
@@ -23,11 +24,14 @@ const SEE_FEED_QUERY = gql`
 function Home() {
   const { data } = useQuery(SEE_FEED_QUERY);
   return (
-    <div>
-      {data?.seeFeed?.map((post) => (
-        <Post key={post.id} {...post} />
-      ))}
-    </div>
+    <>
+      <PageTitle title="Лента" />
+      <div>
+        {data?.seeFeed?.map((post) => (
+          <Post key={post.id} {...post} />
+        ))}
+      </div>
+    </>
   );
 }
 export default Home;

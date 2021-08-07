@@ -80,17 +80,29 @@ function Post({ id, user, file, isLiked, likes }) {
       },
     } = result;
     if (ok) {
-      cache.writeFragment({
-        id: `Photo:${id}`,
-        fragment: gql`
-          fragment LikeFragment on Photo {
-            isLiked
-          }
-        `,
-        data: {
-          isLiked: !isLiked,
-        },
+      const fragmentId = `Photo:${id}`;
+      const fragment = gql`
+        fragment LikeFragment on Photo {
+          isLiked
+          likes
+        }
+      `;
+      const result = cache.readFragment({
+        id: fragmentId,
+        fragment,
       });
+      if ("isLiked" in result && "likes" in result) {
+        console.log("Данные есть в кэше");
+        const { isLiked: cachedIsLiked, likes: cachedLikes } = result;
+        cache.writeFragment({
+          id: fragmentId,
+          fragment,
+          data: {
+            isLiked: !cachedIsLiked,
+            likes: cachedIsLiked ? cachedLikes - 1 : cachedLikes + 1,
+          },
+        });
+      }
     }
   };
   const [toogleLike, { loading }] = useMutation(TOGGLE_LIKE_MUTATION, {

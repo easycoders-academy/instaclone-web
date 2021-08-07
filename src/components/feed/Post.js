@@ -11,6 +11,7 @@ import {
 import { faHeart as SolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { faTelegramPlane } from "@fortawesome/free-brands-svg-icons";
 import { gql, useMutation } from "@apollo/client";
+import Comments from "./Comments";
 
 const TOGGLE_LIKE_MUTATION = gql`
   mutation toggleLike($id: Int!) {
@@ -70,24 +71,6 @@ const PostAction = styled.div`
 const Likes = styled(BoldText)`
   display: block;
   margin-top: 15px;
-`;
-
-const Comments = styled.div`
-  margin-top: 20px;
-`;
-
-const Comment = styled.div``;
-
-const CommentCaption = styled.span`
-  margin-left: 10px;
-`;
-
-const CommentsNumber = styled.span`
-  opacity: 0.7;
-  margin: 10px 0;
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
 `;
 
 function Post({
@@ -166,17 +149,12 @@ function Post({
         <Likes>
           {likes === 1 ? '1 отметка "Нравится"' : `${likes} отметок "Нравится"`}
         </Likes>
-        <Comments>
-          <Comment>
-            <BoldText>{user.username}</BoldText>
-            <CommentCaption>{caption}</CommentCaption>
-          </Comment>
-          <CommentsNumber>
-            {commentsNumber === 1
-              ? "1 комментарий"
-              : `${commentsNumber} комментариев`}
-          </CommentsNumber>
-        </Comments>
+        <Comments
+          author={user.username}
+          caption={caption}
+          commentsNumber={commentsNumber}
+          comments={comments}
+        />
       </PostFooter>
     </PostContainer>
   );
@@ -195,12 +173,12 @@ Post.propTypes = {
   commentsNumber: PropTypes.number.isRequired,
   comments: PropTypes.arrayOf(
     PropTypes.shape({
-      caption: PropTypes.string.isRequired,
+      caption: PropTypes.string,
       user: PropTypes.shape({
-        username: PropTypes.string.isRequired,
+        username: PropTypes.string,
       }),
-      createdAt: PropTypes.instanceOf(Date).isRequired,
-      isMine: PropTypes.bool.isRequired,
+      createdAt: PropTypes.string,
+      isMine: PropTypes.bool,
     })
   ),
 };

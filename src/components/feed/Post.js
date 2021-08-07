@@ -72,7 +72,34 @@ const Likes = styled(BoldText)`
   margin-top: 15px;
 `;
 
-function Post({ id, user, file, isLiked, likes }) {
+const Comments = styled.div`
+  margin-top: 20px;
+`;
+
+const Comment = styled.div``;
+
+const CommentCaption = styled.span`
+  margin-left: 10px;
+`;
+
+const CommentsNumber = styled.span`
+  opacity: 0.7;
+  margin: 10px 0;
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+`;
+
+function Post({
+  id,
+  user,
+  file,
+  isLiked,
+  likes,
+  caption,
+  commentsNumber,
+  comments,
+}) {
   const updateToggleLike = (cache, result) => {
     const {
       data: {
@@ -139,6 +166,17 @@ function Post({ id, user, file, isLiked, likes }) {
         <Likes>
           {likes === 1 ? '1 отметка "Нравится"' : `${likes} отметок "Нравится"`}
         </Likes>
+        <Comments>
+          <Comment>
+            <BoldText>{user.username}</BoldText>
+            <CommentCaption>{caption}</CommentCaption>
+          </Comment>
+          <CommentsNumber>
+            {commentsNumber === 1
+              ? "1 комментарий"
+              : `${commentsNumber} комментариев`}
+          </CommentsNumber>
+        </Comments>
       </PostFooter>
     </PostContainer>
   );
@@ -153,6 +191,18 @@ Post.propTypes = {
   file: PropTypes.string.isRequired,
   isLiked: PropTypes.bool.isRequired,
   likes: PropTypes.number.isRequired,
+  caption: PropTypes.string,
+  commentsNumber: PropTypes.number.isRequired,
+  comments: PropTypes.arrayOf(
+    PropTypes.shape({
+      caption: PropTypes.string.isRequired,
+      user: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+      }),
+      createdAt: PropTypes.instanceOf(Date).isRequired,
+      isMine: PropTypes.bool.isRequired,
+    })
+  ),
 };
 
 export default Post;

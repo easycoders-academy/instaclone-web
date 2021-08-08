@@ -63,11 +63,26 @@ function Comments({ photoId, author, caption, commentsNumber, comments }) {
           ...userData.me,
         },
       };
+      const newCachedComment = cache.writeFragment({
+        fragment: gql`
+          fragment newComment on Comment {
+            id
+            createdAt
+            isMine
+            payload
+            user {
+              username
+            }
+          }
+        `,
+        data: newComment,
+      });
+      console.log(newCachedComment);
       cache.modify({
         id: `Photo:${photoId}`,
         fields: {
           comments(prev) {
-            return [...prev, newComment];
+            return [...prev, newCachedComment];
           },
           commentsNumber(prev) {
             return prev + 1;

@@ -142,6 +142,7 @@ function Post({
           {likes === 1 ? '1 отметка "Нравится"' : `${likes} отметок "Нравится"`}
         </Likes>
         <Comments
+          photoId={id}
           author={user.username}
           caption={caption}
           commentsNumber={commentsNumber}

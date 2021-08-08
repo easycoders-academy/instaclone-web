@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import Comment from "./Comment";
+import { useForm } from "react-hook-form";
+import { gql, useMutation } from "@apollo/client";
 
 const CommentsContainer = styled.div`
   margin-top: 20px;
@@ -14,7 +16,29 @@ const CommentsNumber = styled.span`
   font-weight: 600;
 `;
 
-function Comments({ author, caption, commentsNumber, comments }) {
+const CREATE_COMMENT_MUTATION = gql`
+  mutation createComment($photoId: Int!, $payload: String!) {
+    createComment(photoId: $photoId, payload: $payload) {
+      ok
+      error
+    }
+  }
+`;
+
+function Comments({ photoId, author, caption, commentsNumber, comments }) {
+  const { register, handleSubmit, setValue } = useForm();
+  const [createComment, { loading }] = useMutation(CREATE_COMMENT_MUTATION);
+  const onValid = (data) => {
+    const { payload } = data;
+    if (loading) return;
+    createComment({
+      variables: {
+        photoId,
+        payload,
+      },
+    });
+    setValue("payload", "");
+  };
   return (
     <CommentsContainer>
       <Comment author={author} payload={caption} />
@@ -30,11 +54,21 @@ function Comments({ author, caption, commentsNumber, comments }) {
           payload={comment.payload}
         />
       ))}
+      <div>
+        <form onSubmit={handleSubmit(onValid)}>
+          <input
+            {...register("payload", { required: true })}
+            type="text"
+            placeholder="Добавьте комментарий..."
+          />
+        </form>
+      </div>
     </CommentsContainer>
   );
 }
 
 Comments.propTypes = {
+  photoId: PropTypes.number.isRequired,
   author: PropTypes.string.isRequired,
   caption: PropTypes.string,
   commentsNumber: PropTypes.number.isRequired,

@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { BoldText } from "../shared";
-import sanitizeHtml from "sanitize-html";
 import { Link } from "react-router-dom";
 import React from "react";
 

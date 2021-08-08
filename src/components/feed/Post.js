@@ -12,6 +12,7 @@ import { faHeart as SolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { faTelegramPlane } from "@fortawesome/free-brands-svg-icons";
 import { gql, useMutation } from "@apollo/client";
 import Comments from "./Comments";
+import { Link } from "react-router-dom";
 
 const TOGGLE_LIKE_MUTATION = gql`
   mutation toggleLike($id: Int!) {
@@ -114,8 +115,12 @@ function Post({
   return (
     <PostContainer key={id}>
       <PostHeader>
-        <Avatar url={user?.avatar} lg={true} />
-        <Username>{user?.username}</Username>
+        <Link to={`/users/${user?.username}`}>
+          <Avatar url={user?.avatar} lg={true} />
+        </Link>
+        <Link to={`/users/${user?.username}`}>
+          <Username>{user?.username}</Username>
+        </Link>
       </PostHeader>
       <PostContent src={file} />
       <PostFooter>

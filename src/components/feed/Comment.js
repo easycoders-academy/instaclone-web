@@ -2,12 +2,14 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { BoldText } from "../shared";
 import sanitizeHtml from "sanitize-html";
+import { Link } from "react-router-dom";
+import React from "react";
 
 const CommentContainer = styled.div``;
 
 const CommentCaption = styled.span`
   margin-left: 10px;
-  mark {
+  a {
     background-color: inherit;
     color: ${(props) => props.theme.accent};
     cursor: pointer;
@@ -18,21 +20,20 @@ const CommentCaption = styled.span`
 `;
 
 function Comment({ author, payload }) {
-  const cleanedPayload = sanitizeHtml(
-    payload.replace(/#[а-яА-Я]+/g, "<mark>$&</mark>"),
-    {
-      allowedTags: ["mark"],
-    }
-  );
-
   return (
     <CommentContainer>
       <BoldText>{author}</BoldText>
-      <CommentCaption
-        dangerouslySetInnerHTML={{
-          __html: cleanedPayload,
-        }}
-      />
+      <CommentCaption>
+        {payload.split(" ").map((word, index) =>
+          /#[а-яА-Я]+/.test(word) ? (
+            <React.Fragment key={index}>
+              <Link to={`/hashtags/${word}`}>{word}</Link>{" "}
+            </React.Fragment>
+          ) : (
+            <React.Fragment key={index}>{word} </React.Fragment>
+          )
+        )}
+      </CommentCaption>
     </CommentContainer>
   );
 }

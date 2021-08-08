@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { BoldText } from "../components/shared";
 import { POST_FRAGMENT } from "../fragments";
+import Button from "../components/auth/Button";
+import PageTitle from "../components/PageTitle";
 
 const SEE_PROFILE_QUERY = gql`
   query seeProfile($username: String!) {
@@ -26,6 +28,22 @@ const SEE_PROFILE_QUERY = gql`
   ${POST_FRAGMENT}
 `;
 
+const FOLLOW_USER_MUTATION = gql`
+  mutation followUser($username: String!) {
+    followUser(username: $username) {
+      ok
+    }
+  }
+`;
+
+const UNFOLLOW_USER_MUTATION = gql`
+  mutation unfollowUser($username: String!) {
+    unfollowUser(username: $username) {
+      ok
+    }
+  }
+`;
+
 const Header = styled.div`
   display: flex;
 `;
@@ -43,6 +61,8 @@ const Username = styled.h3`
   font-weight: 400;
 `;
 const Row = styled.div`
+  display: flex;
+  align-items: center;
   margin-bottom: 20px;
   font-size: 16px;
 `;
@@ -99,17 +119,41 @@ const Icon = styled.span`
   }
 `;
 
+const ProfileBtn = styled(Button).attrs({
+  as: "span",
+})`
+  margin-left: 10px;
+  margin-top: 0px;
+  padding: 8px 10px;
+  cursor: pointer;
+`;
+
 function Profile() {
   const { username } = useParams();
-  const { data } = useQuery(SEE_PROFILE_QUERY, { variables: { username } });
-  console.log(data);
+  const { data, loading } = useQuery(SEE_PROFILE_QUERY, {
+    variables: { username },
+  });
+
+  const getButton = (seeProfile) => {
+    const { isMe, isFollowing } = seeProfile;
+    if (isMe) return <ProfileBtn>Редактировать профиль</ProfileBtn>;
+    if (isFollowing) return <ProfileBtn>Отписаться</ProfileBtn>;
+    else return <ProfileBtn>Подписаться</ProfileBtn>;
+  };
+
   return (
     <div>
+      <PageTitle
+        title={
+          loading ? "Загрузка..." : `Профиль ${data?.seeProfile?.username}`
+        }
+      />
       <Header>
         <Avatar src={data?.seeProfile?.avatar} />
         <Column>
           <Row>
             <Username>{data?.seeProfile?.username}</Username>
+            {data?.seeProfile ? getButton(data.seeProfile) : null}
           </Row>
           <Row>
             <List>
@@ -137,7 +181,7 @@ function Profile() {
       </Header>
       <Grid>
         {data?.seeProfile?.photos.map((photo) => (
-          <Photo bg={photo.file}>
+          <Photo key={photo.id} bg={photo.file}>
             <Icons>
               <Icon>
                 <FontAwesomeIcon icon={faHeart} />

@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { faComment, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router-dom";
@@ -132,18 +132,58 @@ const ProfileBtn = styled(Button).attrs({
 function Profile() {
   const { username } = useParams();
   const { data: userData } = useMe();
+  const client = useApolloClient();
   const { data, loading } = useQuery(SEE_PROFILE_QUERY, {
     variables: { username },
   });
 
+  const unfollowUserUpdate = (cache, result) => {
+    const {
+      data: {
+        unfollowUser: { ok },
+      },
+    } = result;
+    if (!ok) return;
+    cache.modify({
+      id: `User:${username}`,
+      fields: {
+        totalFollowers(prev) {
+          return prev - 1;
+        },
+        isFollowing(prev) {
+          return false;
+        },
+      },
+    });
+  };
+
   const [unfollowUser] = useMutation(UNFOLLOW_USER_MUTATION, {
     variables: { username },
-    
+    update: unfollowUserUpdate,
   });
+
+  const followUserCompleted = (data) => {
+    const {
+      followUser: { ok },
+    } = data;
+    const { cache } = client;
+    if (!ok) return;
+    cache.modify({
+      id: `User:${username}`,
+      fields: {
+        totalFollowers(prev) {
+          return prev + 1;
+        },
+        isFollowing(prev) {
+          return true;
+        },
+      },
+    });
+  };
 
   const [followUser] = useMutation(FOLLOW_USER_MUTATION, {
     variables: { username },
-    
+    onCompleted: followUserCompleted,
   });
 
   const getButton = (seeProfile) => {

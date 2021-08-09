@@ -155,6 +155,15 @@ function Profile() {
         },
       },
     });
+    const { me } = userData;
+    cache.modify({
+      id: `User:${me.username}`,
+      fields: {
+        totalFollowing(prev) {
+          return prev - 1;
+        },
+      },
+    });
   };
 
   const [unfollowUser] = useMutation(UNFOLLOW_USER_MUTATION, {
@@ -176,6 +185,15 @@ function Profile() {
         },
         isFollowing(prev) {
           return true;
+        },
+      },
+    });
+    const { me } = userData;
+    cache.modify({
+      id: `User:${me.username}`,
+      fields: {
+        totalFollowing(prev) {
+          return prev + 1;
         },
       },
     });

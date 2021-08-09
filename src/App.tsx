@@ -1,21 +1,48 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { login, loginVariables } from "./__generated__/login";
+import { seeFeed } from "./__generated__/seeFeed";
 
-interface IForm {
-  firstName: string;
-  lastName?: string;
-}
+const LOGIN_MUTATION = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      ok
+      error
+      token
+    }
+  }
+`;
+
+const FEED_QUERY = gql`
+  query seeFeed {
+    seeFeed {
+      id
+      user {
+        username
+        avatar
+      }
+      file
+      caption
+      likes
+      comments {
+        id
+        payload
+      }
+      createdAt
+      isMine
+      isLiked
+    }
+  }
+`;
 
 function App() {
-  const { register, getValues, handleSubmit } = useForm<IForm>();
-  const onValid = () => {
-    const { firstName, lastName } = getValues();
-  };
-  return (
-    <form onSubmit={handleSubmit(onValid)}>
-      <input {...register("firstName", { required: true })} type="text" />
-      <input {...register("lastName")} type="text" />
-    </form>
-  );
+  const [login] = useMutation<login, loginVariables>(LOGIN_MUTATION, {
+    variables: {
+      username: "sfsldfhlsdjfhg",
+      password: "fafafsasf",
+    },
+  });
+  const { data } = useQuery<seeFeed>(FEED_QUERY);
+  console.log(data?.seeFeed?.map((photo) => photo?.caption?.split));
+  return <h1>Apollo</h1>;
 }
-
 export default App;

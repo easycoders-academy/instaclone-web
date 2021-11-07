@@ -4,8 +4,8 @@ import PageTitle from "../components/PageTitle";
 import { COMMENTS_FRAGMENT, POST_FRAGMENT } from "../fragments";
 
 const SEE_FEED_QUERY = gql`
-  query seeFeed {
-    seeFeed {
+  query seeFeed($offset: Int!) {
+    seeFeed(offset: $offset) {
       ...PostFragment
       caption
       comments {
@@ -25,7 +25,7 @@ const SEE_FEED_QUERY = gql`
 `;
 
 function Home() {
-  const { data } = useQuery(SEE_FEED_QUERY);
+  const { data } = useQuery(SEE_FEED_QUERY, { variables: { offset: 0 } });
   return (
     <>
       <PageTitle title="Лента" />

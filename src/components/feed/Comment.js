@@ -66,7 +66,7 @@ function Comment({ id, isMine, photoId, author, payload }) {
         <BoldText>{author}</BoldText>
       </Link>
       <CommentCaption>
-        {payload.split(" ").map((word, index) =>
+        {payload?.split(" ").map((word, index) =>
           /#[а-яА-Я]+/.test(word) ? (
             <React.Fragment key={index}>
               <Link to={`/hashtags/${word}`}>{word}</Link>{" "}
